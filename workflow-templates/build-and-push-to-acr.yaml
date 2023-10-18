@@ -8,7 +8,7 @@ name: Build a Docker image and Push it to ACR
 on:
   push:
     branches:
-      - [ main, $default-branch ]
+      - main
   schedule:
     # trigger the build once a week at 7AM ET on Monday
     - cron: 0 11 * * 1
@@ -75,11 +75,8 @@ jobs:
       -
         name: Build and Export to Docker
         uses: docker/build-push-action@v5
-        build-args:
-          PROJECT_NAME: ${ env.PROJECT_NAME }
-          DOCKER_FILE: ${ env.DOCKER_FILE }
-          SOLUTION_FOLDER: ${ env.SOLUTION_FOLDER || '' }
-          SERVICE_NAME: ${ env.SERVICE_NAME || '' }
+        build-args: | 
+          ${ env.BUILD_ARGS || '' }
         with:
           context: .
           platforms: linux/amd64
@@ -98,11 +95,8 @@ jobs:
       -
         name: Push To ACR
         uses: docker/build-push-action@v5
-        build-args:
-          PROJECT_NAME: ${ env.PROJECT_NAME }
-          DOCKER_FILE: ${ env.DOCKER_FILE }
-          SOLUTION_FOLDER: ${ env.SOLUTION_FOLDER || '' }
-          SERVICE_NAME: ${ env.SERVICE_NAME || '' }
+        build-args: | 
+          ${ env.BUILD_ARGS || '' }
         with:
           context: .
           platforms: linux/amd64
