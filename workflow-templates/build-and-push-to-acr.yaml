@@ -75,8 +75,6 @@ jobs:
       -
         name: Build and Export to Docker
         uses: docker/build-push-action@v5
-        build-args: | 
-          ${ env.BUILD_ARGS || '' }
         with:
           context: .
           platforms: linux/amd64
@@ -85,6 +83,8 @@ jobs:
             sumersports.azurecr.io/${{ env.REPO_NAME }}:latest
             sumersports.azurecr.io/${{ env.REPO_NAME }}:${{ github.ref_name }}
             sumersports.azurecr.io/${{ env.REPO_NAME }}:${{ github.sha }}
+          build-args: | 
+            ${ env.BUILD_ARGS || '' }
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
       -
@@ -95,8 +95,6 @@ jobs:
       -
         name: Push To ACR
         uses: docker/build-push-action@v5
-        build-args: | 
-          ${ env.BUILD_ARGS || '' }
         with:
           context: .
           platforms: linux/amd64
@@ -106,6 +104,8 @@ jobs:
             sumersports.azurecr.io/${{ env.REPO_NAME }}:latest
             sumersports.azurecr.io/${{ env.REPO_NAME }}:${{ github.ref_name }}
             sumersports.azurecr.io/${{ env.REPO_NAME }}:${{ github.sha }}
+          build-args: | 
+            ${ env.BUILD_ARGS || '' }
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
       -
