@@ -1,0 +1,9 @@
+{
+  "name": "Build and Push To ACR",
+  "description": "Builds, caches, tests and pushes a Docker image to ACR. Required parameters: PROJECT_NAME, DOCKER_FILE, SOLUTION_FOLDER, SERVICE_NAME, TEST",
+  "catgories": [
+    "Build",
+    "Test",
+    "Docker"
+  ]
+}
