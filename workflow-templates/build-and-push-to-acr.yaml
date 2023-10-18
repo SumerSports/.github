@@ -16,6 +16,7 @@ env:
   BUILD_NAMESPACE: ${{ REPO_NAME }}-${GITHUB_REPOSITORY#*/}
   BUILD_KEY: ${{ REPO_NAME }}-${GITHUB_REPOSITORY#*/}-${{ ${{ github.sha }}
   REPO_NAME: ${GITHUB_REPOSITORY#*/}
+  SERVICE_NAME: "<CHANGE ME>"
   TEST_DOCKER: 'false' # set to true to test the docker image
 
 jobs:
@@ -29,7 +30,7 @@ jobs:
         run: |
           BUILD_ARGS="PROJECT_NAME=<CHANGE ME> \n"
                       SOLUTION_FOLDER=<CHANGE ME> \n"
-                      SERVICE_NAME=<CHANGE ME> \n"          
+                      SERVICE_NAME=${SERVICE_NAME} \n"          
           
           echo "BUILD_ARGS_PATH=${{ env.BUILD_ARGS_PATH }}" >> $GITHUB_ENV
           if [ -f "${{ env.BUILD_ARGS_PATH }}" ]; then
@@ -89,10 +90,10 @@ jobs:
           context: .
           platforms: linux/amd64
           tags: |
-            sumersports.azurecr.io/${{ env.REPO_NAME }}:${{ steps.release.outputs.tag_name }}
-            sumersports.azurecr.io/${{ env.REPO_NAME }}:latest
-            sumersports.azurecr.io/${{ env.REPO_NAME }}:${{ github.ref_name }}
-            sumersports.azurecr.io/${{ env.REPO_NAME }}:${{ github.sha }}
+            sumersports.azurecr.io/${{ env.REPO_NAME }}-${{ env.SERVICE_NAME }}:${{ steps.release.outputs.tag_name }}
+            sumersports.azurecr.io/${{ env.REPO_NAME }}-${{ env.SERVICE_NAME }}:latest
+            sumersports.azurecr.io/${{ env.REPO_NAME }}-${{ env.SERVICE_NAME }}:${{ github.ref_name }}
+            sumersports.azurecr.io/${{ env.REPO_NAME }}-${{ env.SERVICE_NAME }}:${{ github.sha }}
           # This should be the only thing you need to change
           #
           build-args: | 
@@ -112,10 +113,10 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            sumersports.azurecr.io/${{ env.REPO_NAME }}:${{ steps.release.outputs.tag_name }}
-            sumersports.azurecr.io/${{ env.REPO_NAME }}:latest
-            sumersports.azurecr.io/${{ env.REPO_NAME }}:${{ github.ref_name }}
-            sumersports.azurecr.io/${{ env.REPO_NAME }}:${{ github.sha }}
+            sumersports.azurecr.io/${{ env.REPO_NAME }}-${{ env.SERVICE_NAME }}:${{ steps.release.outputs.tag_name }}
+            sumersports.azurecr.io/${{ env.REPO_NAME }}-${{ env.SERVICE_NAME }}:latest
+            sumersports.azurecr.io/${{ env.REPO_NAME }}-${{ env.SERVICE_NAME }}:${{ github.ref_name }}
+            sumersports.azurecr.io/${{ env.REPO_NAME }}-${{ env.SERVICE_NAME }}:${{ github.sha }}
           build-args: | 
             ${ env.BUILD_ARGS || '' }
           cache-from: type=local,src=/tmp/.buildx-cache
