@@ -3,11 +3,11 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'services/<CHANGE ME>/**'
   schedule:
     # trigger the build once a week at 7AM ET on Monday
     - cron: 0 11 * * 1
-  paths:
-    - 'services/<CHANGE ME>/**'
   workflow_dispatch:
 
 env:
