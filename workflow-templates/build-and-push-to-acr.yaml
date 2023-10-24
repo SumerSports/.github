@@ -24,6 +24,10 @@ on:
         required: true
         description: |
           The id for the service principal used to push to ACR
+      GITHUB_TOKEN:
+        required: true
+        description: |
+          The token for the github action
 
   schedule:
     # trigger the build once a week at 7AM ET on Monday
@@ -72,7 +76,9 @@ jobs:
         if: github.ref_name == 'main'
         id: release
         name: Determine the Release Semantic Version
-        uses: rymndhng/release-on-push-action@v0.24.0
+        uses: rymndhng/release-on-push-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           bump_version_scheme: minor
           use_github_release_notes: true
