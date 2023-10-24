@@ -1,10 +1,30 @@
-name: <INSERT SERVICE> Build and Push to ACR
+name: Build and Push to ACR
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'services/<CHANGE ME>/**'
+  workflow_call:
+    inputs:
+      BUILD_ARGS_PATH:
+        required: false
+        type: string
+        description: |
+          Path to a yaml file that holds build args for docker
+      SERVICE_NAME:
+        type: string
+        default: "main"
+        description: |
+          If several services are defined in a repo, add a service name to make each unique
+      TEST_DOCKER:
+        type: boolean
+        default: false
+    secrets:
+      ACR_RW_SERVICE_PRINCIPAL_PASSWORD:
+        required: true
+        description: |
+          The password for the service principal used to push to ACR
+      ACR_RW_SERVICE_PRINCIPAL_ID:
+        required: true
+        description: |
+          The id for the service principal used to push to ACR
+
   schedule:
     # trigger the build once a week at 7AM ET on Monday
     - cron: 0 11 * * 1
@@ -12,12 +32,11 @@ on:
 
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-  BUILD_ARGS_PATH: "<CHANGE ME>" # path to a yaml file with build args
-  BUILD_NAMESPACE: ${{ REPO_NAME }}-${GITHUB_REPOSITORY#*/}
-  BUILD_KEY: ${{ REPO_NAME }}-${GITHUB_REPOSITORY#*/}-${{ ${{ github.sha }}
+  # define the path to a yaml file that holds build args for docker
+  BUILD_ARGS_PATH: ${{ inputs.BUILD_ARGS_PATH }}
+  BUILD_NAMESPACE: ${GITHUB_REPOSITORY#*/}-${{ inputs.SERVICE_NAME }}
+  BUILD_KEY: ${GITHUB_REPOSITORY#*/}-${{ inputs.SERVICE_NAME }}-${{ github.sha }}
   REPO_NAME: ${GITHUB_REPOSITORY#*/}
-  SERVICE_NAME: "<CHANGE ME>"
-  TEST_DOCKER: 'false' # set to true to test the docker image
 
 jobs:
   build:
@@ -30,7 +49,7 @@ jobs:
         run: |
           BUILD_ARGS="PROJECT_NAME=<CHANGE ME> \n"
                       SOLUTION_FOLDER=<CHANGE ME> \n"
-                      SERVICE_NAME=${SERVICE_NAME} \n"          
+                      SERVICE_NAME=${inputs.SERVICE_NAME} \n"          
           
           echo "BUILD_ARGS_PATH=${{ env.BUILD_ARGS_PATH }}" >> $GITHUB_ENV
           if [ -f "${{ env.BUILD_ARGS_PATH }}" ]; then
@@ -38,6 +57,8 @@ jobs:
             echo $BUILD_ARGS >> $GITHUB_ENV
             echo "EOF" >> $GITHUB_ENV
           fi
+          
+          echo "REPO_NAME=${ inputs.NAME || env.REPO_NAME }}" >> $GITHUB_ENV
       -
         name: Cache Docker layers
         uses: actions/cache@v2
@@ -66,7 +87,6 @@ jobs:
           echo "Branch: ${{ github.ref_name }}"
           echo "Repository: ${REPO_NAME}"
           echo "Test Docker: ${TEST_DOCKER}"
-          echo "TEST_DOCKER=${TEST_DOCKER}" >>${GITHUB_ENV}
       -
         name: Checkout
         uses: actions/checkout@v4
@@ -81,8 +101,8 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: sumersports.azurecr.io
-          username: ${{ secrets.SERVICE_PRINCIPAL_ID }}
-          password: ${{ secrets.SERVICE_PRINCIPAL_PASSWORD }}
+          username: ${{ secrets.ACR_RW_SERVICE_PRINCIPAL_ID }}
+          password: ${{ secrets.ACR_RW_SERVICE_PRINCIPAL_PASSWORD }}
       -
         name: Build and Export to Docker
         uses: docker/build-push-action@v5
@@ -90,10 +110,10 @@ jobs:
           context: .
           platforms: linux/amd64
           tags: |
-            sumersports.azurecr.io/${{ env.REPO_NAME }}-${{ env.SERVICE_NAME }}:${{ steps.release.outputs.tag_name }}
-            sumersports.azurecr.io/${{ env.REPO_NAME }}-${{ env.SERVICE_NAME }}:latest
-            sumersports.azurecr.io/${{ env.REPO_NAME }}-${{ env.SERVICE_NAME }}:${{ github.ref_name }}
-            sumersports.azurecr.io/${{ env.REPO_NAME }}-${{ env.SERVICE_NAME }}:${{ github.sha }}
+            sumersports.azurecr.io/${{ env.REPO_NAME }}-${{ inputs.SERVICE_NAME }}:${{ steps.release.outputs.tag_name }}
+            sumersports.azurecr.io/${{ env.REPO_NAME }}-${{ inputs.SERVICE_NAME }}:latest
+            sumersports.azurecr.io/${{ env.REPO_NAME }}-${{ inputs.SERVICE_NAME }}:${{ github.ref_name }}
+            sumersports.azurecr.io/${{ env.REPO_NAME }}-${{ inputs.SERVICE_NAME }}:${{ github.sha }}
           # This should be the only thing you need to change
           #
           build-args: | 
@@ -102,7 +122,7 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache-new
       -
         name: Test
-        if: env.TEST_DOCKER != 'false'
+        if: input.TEST_DOCKER == true
         run: |
           docker run --rm sumersports.azurecr.io/${{ env.REPO_NAME }}:latest
       -
@@ -113,10 +133,10 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            sumersports.azurecr.io/${{ env.REPO_NAME }}-${{ env.SERVICE_NAME }}:${{ steps.release.outputs.tag_name }}
-            sumersports.azurecr.io/${{ env.REPO_NAME }}-${{ env.SERVICE_NAME }}:latest
-            sumersports.azurecr.io/${{ env.REPO_NAME }}-${{ env.SERVICE_NAME }}:${{ github.ref_name }}
-            sumersports.azurecr.io/${{ env.REPO_NAME }}-${{ env.SERVICE_NAME }}:${{ github.sha }}
+            sumersports.azurecr.io/${{ env.REPO_NAME }}-${{ inputs.SERVICE_NAME }}:${{ steps.release.outputs.tag_name }}
+            sumersports.azurecr.io/${{ env.REPO_NAME }}-${{ inputs.SERVICE_NAME }}:latest
+            sumersports.azurecr.io/${{ env.REPO_NAME }}-${{ inputs.SERVICE_NAME }}:${{ github.ref_name }}
+            sumersports.azurecr.io/${{ env.REPO_NAME }}-${{ inputs.SERVICE_NAME }}:${{ github.sha }}
           build-args: | 
             ${ env.BUILD_ARGS || '' }
           cache-from: type=local,src=/tmp/.buildx-cache
