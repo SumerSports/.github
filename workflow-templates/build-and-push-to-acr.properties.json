@@ -1,6 +1,6 @@
 {
   "name": "Build and Push To ACR",
-  "description": "Builds, caches, tests and pushes a Docker image to ACR. Search for and edit <CHANGE ME> to configure.",
+  "description": "Builds, caches, tests and pushes a Docker image to ACR.",
   "catgories": [
     "Build",
     "Test",
