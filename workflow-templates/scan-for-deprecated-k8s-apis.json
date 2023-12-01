@@ -1,0 +1,9 @@
+{
+  "name": "Scan For Deprecated K8s APIs",
+  "description": "Point the action at a manifest or helm chart directory and it will scan for deprecated K8s APIs",
+  "catgories": [
+    "Helm",
+    "Kubernetes",
+    "Test"
+  ]
+}
