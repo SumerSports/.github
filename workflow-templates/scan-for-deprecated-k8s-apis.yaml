@@ -9,6 +9,4 @@ jobs:
     name: Scan For Deprecated K8s APIs
     uses: SumerSports/workflows/.github/workflows/scan-for-deprecated-k8s-apis.yaml@main
     secrets: inherit
-#    with:
-#      SERVICE_NAME: ""
-#      TEST_DOCKER: false
+    
