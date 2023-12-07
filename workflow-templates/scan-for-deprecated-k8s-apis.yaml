@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - "path/to/charts/**"
+  workflow_dispatch:
 
 jobs:
   scan-for-deprecated-k8s-apis:
