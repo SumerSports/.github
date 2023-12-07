@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "path/to/charts/**"
 
 jobs:
   scan-for-deprecated-k8s-apis:
@@ -10,4 +12,4 @@ jobs:
     uses: SumerSports/workflows/.github/workflows/scan-for-deprecated-k8s-apis.yaml@main
     secrets: inherit
     with:
-      K8S_DIR: ""
+      K8S_DIR: "path/to/charts/**"
