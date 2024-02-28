@@ -3,6 +3,24 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      BUILD_ARGS:
+        description: 'Build args to be passed to docker in a json string'
+        required: false
+        default: ''
+      FORCE_PUSH_TO_ACR:
+        description: 'This is used in the event of a workflow dispatch to push an image to ACR from a PR'
+        required: false
+        default: false
+      SERVICE_NAME:
+        description: 'Service name'
+        required: false
+        default: ''
+      TEST_DOCKER:
+        description: 'Run docker tests'
+        required: false
+        default: false
 
 jobs:
   build-and-push-to-acr:
@@ -10,5 +28,12 @@ jobs:
     uses: SumerSports/workflows/.github/workflows/build-and-push-to-acr.yaml@main
     secrets: inherit
 #    with:
+#      # add additional build args to the docker build command
+#      BUILD_ARGS: ""
+#      # the path to the dockerfile to use
+#      DOCKERFILE: "./Dockerfile"
+#      # by default the image is named ${REPO_NAME}-${{ github.sha }}" if service name is defined it will be
+#      # defined like "${REPO_NAME}-${SERVICE_NAME}-${{ github.sha }}"
 #      SERVICE_NAME: ""
+#      # set to true if you need to run docker tests
 #      TEST_DOCKER: false
