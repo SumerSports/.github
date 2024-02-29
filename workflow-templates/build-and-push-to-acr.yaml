@@ -6,7 +6,9 @@ on:
   workflow_dispatch:
     inputs:
       BUILD_ARGS:
-        description: 'Build args to be passed to docker in a json string'
+        description: |
+          Build args to be passed to docker in a string that's delimited by carriage returns (sorry it sucks)
+          https://github.com/docker/build-push-action/issues/557
         required: false
         default: ''
       FORCE_PUSH_TO_ACR:
@@ -28,7 +30,8 @@ jobs:
     uses: SumerSports/workflows/.github/workflows/build-and-push-to-acr.yaml@main
     secrets: inherit
 #    with:
-#      # add additional build args to the docker build command
+#      # Build args to be passed to docker in a string that's delimited by carriage returns (sorry it sucks)
+#      # https://github.com/docker/build-push-action/issues/557
 #      BUILD_ARGS: ""
 #      # the path to the dockerfile to use
 #      DOCKERFILE: "./Dockerfile"
