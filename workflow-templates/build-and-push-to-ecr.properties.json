@@ -1,0 +1,11 @@
+{
+  "name": "Build and Push To ECR",
+  "description": "Builds, caches, and pushes a Docker image to ECR.",
+  "catgories": [
+    "Build",
+    "Test",
+    "Docker",
+    "AWS",
+    "ECR"
+  ]
+}
