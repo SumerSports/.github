@@ -8,6 +8,18 @@ on:
   workflow_dispatch:
 
 jobs:
+#  This is an example of a pre job you can run to get an example Dockerfile from the base images repo
+#  name: Get Dockerfile
+#  runs-on: ubuntu-latest
+#  steps:
+#    - name: Checkout Base Images
+#      uses: actions/checkout@v4
+#      with:
+#        repository: SumerSports/base-images
+#        path: base-images
+#        ref: main
+#        token: ${{ secrets.GH_SUMERDEVOPS_TOKEN }}
+
   build-and-push-default-image-to-ecr:
     name: Build And Push Default Docker Image To ECR
     uses: SumerSports/workflows/.github/workflows/build-and-push-to-ecr.yaml@main
@@ -16,7 +28,8 @@ jobs:
       # additional tags to add to this image, must include full registry and repo address and tag. Must be carriage
       # return delimited
       # additional_tags: ""
-      # path to Dockerfile
+      # path to Dockerfile the default is "./Dockerfile" if you use the Get Dockerfile job you can set this like
+      # this: "./base-images/dotnet-7.0/example.dockerfile"
       # dockerfile: ".Dockerfile"
       # additional build args to pass to docker. Must be carriage return delimited
       # build_args: ""
