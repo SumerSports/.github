@@ -9,25 +9,24 @@ on:
 
 jobs:
 #  This is an example of a pre job you can run to get an example Dockerfile from the base images repo
- get-dockerfile:
-   name: Get Dockerfile
-   runs-on: ubuntu-latest
-   outputs:
-     dockerfile_content: ${{ steps.get-dockerfile-content.outputs.dockerfile_content }}
-   steps:
-     - name: Checkout Base Images
-       uses: actions/checkout@v4
-       with:
-         repository: SumerSports/base-images
-         path: base-images
-         ref: main
-         token: ${{ secrets.GH_SUMERDEVOPS_TOKEN }}
-     - name: Get Dockerfile Content
-       id: get-dockerfile-content
-       run: |
-         # This is an example of how to get the content of a Dockerfile from the base images repo
-         echo "::set-output name=dockerfile_content::$(cat base-images/dotnet-7.0/dockerfile.base)" 
-  
+# get-dockerfile:
+#   name: Get Dockerfile
+#   runs-on: ubuntu-latest
+#   outputs:
+#     dockerfile_content: ${{ steps.get-dockerfile-content.outputs.dockerfile_content }}
+#   steps:
+#     - name: Checkout Base Images
+#       uses: actions/checkout@v4
+#       with:
+#         repository: SumerSports/base-images
+#         path: base-images
+#         ref: main
+#         token: ${{ secrets.GH_SUMERDEVOPS_TOKEN }}
+#     - name: Get Dockerfile Content
+#       id: get-dockerfile-content
+#       run: |
+#         # This is an example of how to get the content of a Dockerfile from the base images repo
+#         echo "::set-output name=dockerfile_content::$(cat base-images/dotnet-7.0/dockerfile.base)"
 
   build-and-push-default-image-to-ecr:
     name: Build And Push Default Docker Image To ECR
