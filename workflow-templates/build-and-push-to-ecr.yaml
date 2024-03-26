@@ -9,16 +9,17 @@ on:
 
 jobs:
 #  This is an example of a pre job you can run to get an example Dockerfile from the base images repo
-#  name: Get Dockerfile
-#  runs-on: ubuntu-latest
-#  steps:
-#    - name: Checkout Base Images
-#      uses: actions/checkout@v4
-#      with:
-#        repository: SumerSports/base-images
-#        path: base-images
-#        ref: main
-#        token: ${{ secrets.GH_SUMERDEVOPS_TOKEN }}
+# get-dockerfile:
+#   name: Get Dockerfile
+#   runs-on: ubuntu-latest
+#   steps:
+#     - name: Checkout Base Images
+#       uses: actions/checkout@v4
+#       with:
+#         repository: SumerSports/base-images
+#         path: base-images
+#         ref: main
+#         token: ${{ secrets.GH_SUMERDEVOPS_TOKEN }}
 
   build-and-push-default-image-to-ecr:
     name: Build And Push Default Docker Image To ECR
