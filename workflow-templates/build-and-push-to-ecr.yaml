@@ -45,12 +45,12 @@ jobs:
       #
       # additional build args to pass to docker. Must be carriage return delimited
       # an example implementation of a dotnet build arg would look like:
-      #   build_args: |
-      #     SOLUTION_FOLDER=<path to solution folder>
-      #     PROJECT_NAME=<name of dotnet project>
-      #     DD_GIT_REPOSITORY_URL=<url to git repo>
-      #     DD_GIT_COMMIT_SHA=${{ github.sha }}
-      #     RUN_TESTS=true
+      # build_args: |
+      #   SOLUTION_FOLDER=<path to solution folder>
+      #   PROJECT_NAME=<name of dotnet project>
+      #   DD_GIT_REPOSITORY_URL=<url to git repo>
+      #   DD_GIT_COMMIT_SHA=${{ github.sha }}
+      #   RUN_TESTS=true
       # default:
       # build_args: ""
       #
