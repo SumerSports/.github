@@ -28,7 +28,7 @@ jobs:
     with:
       # additional tags to add to this image, must include full registry and repo address and tag. Must be carriage
       # return delimited
-      # exmple:
+      # example:
       # additional_tags: |
       #  <ECR Registry>/<ECR REPOSITORY NAME>:<TAG NAME>
       #  567639518918.dkr.ecr.us-east-1.amazonaws.com/base-images/dotnet-7:<NEW TAG>
