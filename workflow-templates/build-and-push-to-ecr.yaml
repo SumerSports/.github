@@ -4,7 +4,7 @@ on:
     paths:
       # example paths
       - "dotnet/**"
-      - ".github/workflows/dotnet-build-7.0-base.yaml"
+      - ".github/workflows/build-and-push-to-ecr.yaml"
   workflow_dispatch:
 
 jobs:
