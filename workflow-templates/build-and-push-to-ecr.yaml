@@ -47,11 +47,10 @@ jobs:
       # default:
       # additional_tags: ""
       #
-      # path to Dockerfile the default is "./Dockerfile" this likely will not work,
-      # so define your own. if you use the Get Dockerfile job above, you can
-      # set the path like this example:
-      # dockerfile: "./base-images/dotnet-7.0/example.dockerfile"
-      # default:
+      # path to Dockerfile the default is "./Dockerfile" you can point it to any
+      # dockerfile in your repo, or grab the content of another dockerfile in
+      # another repo and the github action will create a dockerfile for you, at
+      # whatever path you specify
       # dockerfile: ".Dockerfile"
       #
       # create a dockerfile on the fly with this content. We can get the content
