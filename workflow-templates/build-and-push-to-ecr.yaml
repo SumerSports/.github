@@ -1,43 +1,88 @@
-name: Build a Docker image and Push it to ACR v2
+name: Build a Docker image and Push it to ECR
 on:
   push:
-    branches:
-      - main
+    paths:
+      # example paths
+      - "dotnet/**"
+      - ".github/workflows/build-and-push-to-ecr.yaml"
   workflow_dispatch:
-    inputs:
-      service_name:
-        description: |
-          service name of the thing that's being built, this is also being used to tag the image
-        required: true
-        type: string
-      dockerfile:
-        default: "./Dockerfile"
-        description: Dockerfile to use for the build
-        required: false
-        type: string
-      publish:
-        default: false
-        description: 'Indicates whether to run Docker publish after build'
-        required: false
-        type: boolean
 
 jobs:
-  add-version-tag
-      - name: Bump version and push tag
-        if: ${{ inputs.push_to_nuget }}
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v6.2
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag_prefix: '${{ inputs.service_name }}-v'
-  build-and-push-to-acr:
-    name: Build And Push Docker Image To ACR
+#  This is an example of a pre job you can run to get an example Dockerfile from the base images repo
+# get-dockerfile:
+#   name: Get Dockerfile
+#   runs-on: ubuntu-latest
+#   outputs:
+#     dockerfile_content: ${{ steps.get-dockerfile-content.outputs.dockerfile_content }}
+#   steps:
+#     - name: Checkout Base Images
+#       uses: actions/checkout@v4
+#       with:
+#         repository: SumerSports/base-images
+#         path: base-images
+#         ref: main
+#         token: ${{ secrets.GH_SUMERDEVOPS_TOKEN }}
+#     - name: Get Dockerfile Content
+#       id: get-dockerfile-content
+#       run: |
+#         # This is an example of how to get the content of a Dockerfile from the base images repo
+#         echo "::set-output name=dockerfile_content::$(cat base-images/dotnet-7.0/dockerfile.base)"
+
+  build-and-push-default-image-to-ecr:
+    name: Build And Push Default Docker Image To ECR
     uses: SumerSports/workflows/.github/workflows/build-and-push-to-ecr.yaml@main
+    needs: get-dockerfile
     secrets: inherit
     with:
-      # service name is used to tag the image, so it must conform to OCI registry tagging rules
-      service_name: ""
-      # the path to the dockerfile to use
-      dockerfile: "./Dockerfile"
-      # set to true if you need to run docker publish
-      publish: false
+      # additional tags to add to this image, must include full registry and repo address and tag. Must be carriage
+      # return delimited. Default tags already include
+      # 1) the sha of the commit
+      # 2) <tag prefix><semantic version>
+      # 3) <tag prefix>latest
+      # example usage of extra tags:
+      # additional_tags: |
+      #  <ECR Registry>/<ECR REPOSITORY NAME>:<TAG NAME>
+      #  567639518918.dkr.ecr.us-east-1.amazonaws.com/base-images/dotnet-7:<NEW TAG>
+      #  567639518918.dkr.ecr.us-east-1.amazonaws.com/base-images/dotnet-7:<ANOTHER TAG>
+      # default:
+      # additional_tags: ""
+      #
+      # path to Dockerfile the default is "./Dockerfile" you can point it to any
+      # dockerfile in your repo, or grab the content of another dockerfile in
+      # another repo and the github action will create a dockerfile for you, at
+      # whatever path you specify
+      # dockerfile: ".Dockerfile"
+      #
+      # create a dockerfile on the fly with this content. We can get the content
+      # from the base images repo in a previous job, but since it is ran in its
+      # own container you need to add it to this job.
+      # example:
+      # dockerfile_content: ${{ needs.get-dockerfile.outputs.dockerfile_content }}
+      # default:
+      # dockerfile_content: ""
+      #
+      # additional build args to pass to docker. Must be carriage return delimited
+      # an example implementation of a dotnet build arg would look like:
+      # build_args: |
+      #   SOLUTION_FOLDER=<path to solution folder>
+      #   PROJECT_NAME=<name of dotnet project>
+      #   DD_GIT_REPOSITORY_URL=<url to git repo>
+      #   DD_GIT_COMMIT_SHA=${{ github.sha }}
+      #   RUN_TESTS=true
+      # default:
+      # build_args: ""
+      #
+      # name of the repo to push to ex: "base-images/dotnet-7" Required
+      repo_name: ""
+      #
+      # Location for the aws registry
+      # region: us-east-1
+      #
+      # AWS role to assume arn:aws:iam::${ACCOUNT}:role/<THIS ROLE NAME> Required
+      role_name: ""
+      #
+      # Prefix for the semantic version tag to be pushed. Example "dotnet7-v" Required
+      tag_prefix: ""
+      #
+      # Indicates whether to run Docker publish after build (you might want to only run a test, for example)
+      # publish: false
