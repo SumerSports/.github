@@ -53,13 +53,13 @@ jobs:
       # whatever path you specify
       # dockerfile: ".Dockerfile"
       #
-      # create a dockerfile on the fly with this content. We can get the content
+      # create a dockerfile on the fly with this content in base64. We can get the content
       # from the base images repo in a previous job, but since it is ran in its
       # own container you need to add it to this job.
       # example:
-      # dockerfile_content: ${{ needs.get-dockerfile.outputs.dockerfile_content }}
+      # dockerfile_content_base64: ${{ needs.get-dockerfile.outputs.dockerfile_content }}
       # default:
-      # dockerfile_content: ""
+      # dockerfile_content_base64: ""
       #
       # additional build args to pass to docker. Must be carriage return delimited
       # an example implementation of a dotnet build arg would look like:
