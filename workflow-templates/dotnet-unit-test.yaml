@@ -8,7 +8,7 @@ on:
 
 jobs:
   call-dotnet-unit-test-workflow:
-    uses: ImIOImI/.github/workflows/dotnet-unit-test.yaml@main
+    uses: SumerSports/workflows/.github/workflows/dotnet-unit-test.yaml@main
     secrets: inherit
     with:
       # change the SOULTION_FOLDER to the path of the solution folder
