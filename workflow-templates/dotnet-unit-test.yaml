@@ -1,0 +1,18 @@
+name: Dotnet Unit Test and Coverage Report
+on:
+  push:
+    paths:
+      # example paths
+      - "services/**"
+      - ".github/workflows/dotnet-unit-test.yaml"
+
+jobs:
+  call-dotnet-unit-test-workflow:
+    uses: SumerSports/workflows/.github/workflows/dotnet-unit-test.yaml@main
+    secrets: inherit
+    with:
+      # change the SOULTION_FOLDER to the path of the solution folder
+      SOLUTION_FOLDER: 'services/src'
+      DOTNET_VERSION: '8.0'
+      # change the COVERAGE_THRESHOLD to the minimum coverage percentage required
+      COVERAGE_THRESHOLD: 80
