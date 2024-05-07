@@ -1,0 +1,9 @@
+{
+  "name": "Dotnet Unit Test and Coverage Report",
+  "description": "Runs unit tests and generates coverage report for dotnet core projects",
+  "catgories": [
+    "Test",
+    "Coverage",
+    "CI"
+  ]
+}
